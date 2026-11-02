@@ -1,28 +1,37 @@
-import { likeBlogAction } from "@/app/actions/blogs"
-import { getBlogById } from "@/app/services/blogs"
+import Link from "next/link"
+import { getUser } from "../../services/users"
 import { notFound } from "next/navigation"
 
-export const instant = false
-const BlogPage = async ({ params }: { params: Promise<{id: string }> }) => {
-  const { id } = await params
-  const blog = await getBlogById(Number(id))
+const User = async ({
+  params,
+}: {
+  params: Promise<{ username: string }>
+}) => {
+  const { username } = await params
 
-  if (!blog) {
+  const user = await getUser(username)
+
+  if (!user) {
     notFound()
   }
 
   return (
     <div>
-      <h2>Title</h2><p>{blog.title}</p>
-      <h2>Author</h2><p>{blog.author}</p>
-      <h2>Url</h2><p>{blog.url}</p>
-      <h2>Likes</h2><p>{blog.likes}</p>
-      <form action={likeBlogAction}>
-        <input type="hidden" name="id" value={blog.id}/>
-        <button type="submit">Like</button>
-      </form>
+      <h2>{user.name}</h2>
+
+      <h3>Added blogs</h3>
+
+      <ul>
+        {user.blogs.map(blog => (
+          <li key={blog.id}>
+            <Link href={`/blogs/${blog.id}`}>
+              {blog.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
 
-export default BlogPage
+export default User

@@ -10,7 +10,7 @@ export const getBlogs = (filter?: string) => {
           .orderBy(desc(blogs.likes))
 }
 
-export const addBlog = async (author: string, url: string, title: string, likes: number, year: number) => {
+export const addBlog = async (author: string, url: string, title: string, year: number, userId: number) => {
   const result = await db
     .insert(blogs)
     .values({
@@ -18,6 +18,7 @@ export const addBlog = async (author: string, url: string, title: string, likes:
       url,
       title,
       year,
+      userId,
     })
     .returning()
 

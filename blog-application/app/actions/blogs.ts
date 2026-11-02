@@ -8,10 +8,11 @@ export const createBlog = async (formData: FormData) => {
   const author = formData.get('author') as string
   const url = formData.get('url') as string
   const title = formData.get('title') as string
-  const likes = Number(formData.get('likes'))
   const year = Number(formData.get('year'))
+  const userId = Number(formData.get('userId'))
 
-  await addBlog(author, url, title, likes, year)
+  await addBlog(author, url, title, year, userId)
+
   redirect("/blogs")
 }
 

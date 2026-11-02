@@ -1,35 +1,56 @@
 import { createBlog } from "../../actions/blogs"
+import { getUsers } from "../../services/users"
 
-const NewBlog = () => {
+const NewBlog = async () => {
+  const users = await getUsers()
+
   return (
     <div>
       <h2>Create a new Blog</h2>
+
       <form action={createBlog}>
         <div>
           <label>
-            author
-            <input name="author" type="text" />
+            Author
+            <input name="author" type="text" required />
           </label>
         </div>
+
         <div>
           <label>
-            url
-            <input name="url" type="text" />
+            URL
+            <input name="url" type="text" required />
           </label>
         </div>
+
         <div>
           <label>
-            title
-            <input name="title" type="text" />
+            Title
+            <input name="title" type="text" required />
           </label>
         </div>
+
         <div>
           <label>
             Year
             <input name="year" type="number" required />
           </label>
         </div>
-        <button type="submit">create</button>
+
+        <div>
+          <label>
+            User
+            <select name="userId" required>
+              {users.map(user => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <button type="submit">Create</button>
       </form>
     </div>
   )
