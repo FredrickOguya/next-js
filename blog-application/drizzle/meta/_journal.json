@@ -15,6 +15,20 @@
       "when": 1793619936562,
       "tag": "0001_closed_killraven",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793642437776,
+      "tag": "0002_amazing_captain_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793642833917,
+      "tag": "0003_nifty_sentinel",
+      "breakpoints": true
     }
   ]
 }

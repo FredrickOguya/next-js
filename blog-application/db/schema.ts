@@ -1,5 +1,11 @@
 import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  username: text('username').notNull(),
+  name: text('name').notNull(),
+})
+
 export const blogs = pgTable('blogs', {
   id: serial('id').primaryKey(),
   title: text('title').notNull(),
@@ -7,4 +13,5 @@ export const blogs = pgTable('blogs', {
   url: text('url').notNull(),
   likes: integer('likes').notNull().default(0),
   year: integer('year').notNull(),
+  userId: integer("user_id").notNull().references(() => users.id)
 })
