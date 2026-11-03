@@ -29,6 +29,13 @@
       "when": 1793642833917,
       "tag": "0003_nifty_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793685618384,
+      "tag": "0004_white_franklin_storm",
+      "breakpoints": true
     }
   ]
 }
