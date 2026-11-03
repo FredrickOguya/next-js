@@ -1,10 +1,20 @@
 "use client"
 
 import { useActionState } from "react"
-import { createBlog } from "../../actions/blogs"
+import { BlogFormState, createBlog } from "../../actions/blogs"
+
+const initialState: BlogFormState = {
+  errors: {},
+  values: {
+    author: "",
+    url: "",
+    title: "",
+    year: ""
+  }
+}
 
 const NewBlog = () => {
-  const [ state, formAction] = useActionState(createBlog, { error: ""})
+  const [ state, formAction] = useActionState(createBlog, initialState)
 
   return (
     <div>
@@ -14,32 +24,40 @@ const NewBlog = () => {
         <div>
           <label>
             Author
-            <input name="author" type="text" required minLength={5}/>
+            <input name="author" type="text" required defaultValue={state.values?.author}/>
           </label>
+          {state.errors.author && (
+            <p style={{ color: "red" }}>{state.errors.author}</p>
+          )}
         </div>
 
         <div>
           <label>
             URL
-            <input name="url" type="text" required minLength={5}/>
+            <input name="url" type="text" required defaultValue={state.values?.url}/>
           </label>
+          {state.errors.url && (
+            <p style={{ color: "red"}}>{state.errors.url}</p>
+          )}
         </div>
 
         <div>
           <label>
             Title
-            <input name="title" type="text" required minLength={5}/>
+            <input name="title" type="text" required  defaultValue={state.values?.title}/>
           </label>
+          {state.errors.title && (
+            <p style={{ color: "red" }}>{state.errors.title}</p>
+          )}
         </div>
 
         <div>
           <label>
             Year
-            <input name="year" type="number" required />
+            <input name="year" type="number" required defaultValue={state.values?.year}/>
           </label>
         </div>
         <button type="submit">Create</button>
-        {state.error && <p style={{color: "red"}}>{state.error}</p>}
       </form>
     </div>
   )
