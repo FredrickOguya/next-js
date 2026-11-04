@@ -1,7 +1,9 @@
 "use client"
 
 import { useActionState } from "react"
+import { useRouter } from "next/navigation"
 import { BlogFormState, createBlog } from "../../actions/blogs"
+import { useNotification } from "../../components/NotificationContext"
 
 const initialState: BlogFormState = {
   errors: {},
@@ -9,55 +11,96 @@ const initialState: BlogFormState = {
     author: "",
     url: "",
     title: "",
-    year: ""
-  }
+    year: "",
+  },
 }
 
 const NewBlog = () => {
-  const [ state, formAction] = useActionState(createBlog, initialState)
+  const { showNotification } = useNotification()
+  const router = useRouter()
+
+  const [state, formAction] = useActionState(
+    async (prev: BlogFormState, formData: FormData): Promise<BlogFormState> => {
+      const result = await createBlog(prev, formData)
+
+      if (result.success) {
+        showNotification("blog created", "success")
+        router.push("/blogs")
+        return initialState
+      }
+
+      return result
+    },
+    initialState,
+  )
 
   return (
-    <div>
+    <div >
       <h2>Create a new Blog</h2>
 
-      <form action={formAction}>
+      <form action={formAction} className="space-y-4">
         <div>
-          <label>
+          <label className="block">
             Author
-            <input name="author" type="text" required defaultValue={state.values?.author}/>
+            <input
+              name="author"
+              type="text"
+              required
+              defaultValue={state.values?.author}
+            />
           </label>
           {state.errors.author && (
-            <p style={{ color: "red" }}>{state.errors.author}</p>
+            <p className="text-red-600 text-sm mt-1">{state.errors.author}</p>
           )}
         </div>
 
         <div>
-          <label>
+          <label className="block">
             URL
-            <input name="url" type="text" required defaultValue={state.values?.url}/>
+            <input
+              name="url"
+              type="text"
+              required
+              defaultValue={state.values?.url}
+            />
           </label>
           {state.errors.url && (
-            <p style={{ color: "red"}}>{state.errors.url}</p>
+            <p className="text-red-600 text-sm mt-1">{state.errors.url}</p>
           )}
         </div>
 
         <div>
-          <label>
+          <label className="block">
             Title
-            <input name="title" type="text" required  defaultValue={state.values?.title}/>
+            <input
+              name="title"
+              type="text"
+              required
+              defaultValue={state.values?.title}
+            />
           </label>
           {state.errors.title && (
-            <p style={{ color: "red" }}>{state.errors.title}</p>
+            <p className="text-red-600 text-sm mt-1">{state.errors.title}</p>
           )}
         </div>
 
         <div>
-          <label>
+          <label className="block">
             Year
-            <input name="year" type="number" required defaultValue={state.values?.year}/>
+            <input
+              name="year"
+              type="number"
+              required
+              defaultValue={state.values?.year}
+            />
           </label>
         </div>
-        <button type="submit">Create</button>
+
+        <button
+          type="submit"
+        >
+          Create
+        </button>
       </form>
     </div>
   )
