@@ -102,7 +102,6 @@ const NewBlog = () => {
             <input
               name="year"
               type="number"
-              required
               defaultValue={state.values?.year}
               className={inputClass}
             />
@@ -110,6 +109,7 @@ const NewBlog = () => {
         </div>
 
         <button
+          data-testid="create-blog-button"
           type="submit"
           disabled={pending}
           className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium px-4 py-2 rounded"

@@ -29,13 +29,13 @@ const Blog = async ({
   return (
     <div className="min-h-screen bg-white px-4 py-12">
       <div className="max-w-2xl mx-auto">
-        <article className="mt-5 rounded-md border border-gray-100 p-8 shadow-sm">
+        <article data-testid="blog-detail" className="mt-5 rounded-md border border-gray-100 p-8 shadow-sm">
 
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 data-testid="blog-title" className="text-2xl font-bold text-gray-800">
             {blog.title}
           </h2>
 
-          <p className="mt-3 text-lg text-gray-600">
+          <p data-testid="blog-author" className="mt-3 text-lg text-gray-600">
             by {blog.author}
           </p>
 

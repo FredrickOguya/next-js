@@ -40,6 +40,7 @@ const ReadingListButton = ({
 
   return (
     <button
+      data-testid="add-to-reading-list-button"
       type="button"
       onClick={handleAdd}
       disabled={added || isPending}

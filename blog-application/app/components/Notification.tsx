@@ -14,6 +14,7 @@ export default function Notification() {
 
   return (
     <div
+      data-testid="notification"
       role={type === "error" ? "alert" : "status"}
       className={`max-w-2xl mx-auto mt-4 px-4 py-2 rounded border ${colors}`}
     >

@@ -20,12 +20,14 @@ const Blogs = async ({
         <input
           type="text"
           name="filter"
+          data-testid="filter-input"
           placeholder="Search blogs by title"
           defaultValue={filter}
           className="flex-1 border border-gray-300 rounded px-3 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <button
+          data-testid="search-button"
           type="submit"
           className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded"
         >
@@ -34,7 +36,7 @@ const Blogs = async ({
       </form>
 
       <div className="overflow-x-auto border rounded-lg shadow-sm">
-        <table className="w-full text-left text-sm">
+        <table data-testid="blogs-list" className="w-full text-left text-sm">
           <thead className="bg-gray-100 dark:bg-gray-800 text-xs uppercase tracking-wide">
             <tr>
               <th className="px-4 py-3">Id</th>
@@ -62,7 +64,7 @@ const Blogs = async ({
                 </td>
                 <td className="px-4 py-3">{blog.author}</td>
                 <td className="px-4 py-3 max-w-xs truncate">{blog.url}</td>
-                <td className="px-4 py-3">{blog.likes}</td>
+                <td className="px-4 py-3">{blog.likes} likes</td>
               </tr>
             ))}
           </tbody>

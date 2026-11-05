@@ -26,7 +26,7 @@ const RegisterPage = () => {
             <input type="text" name="username" required defaultValue={state.values?.username}/>
           </label>
           {state.errors.username && (
-            <p style={{ color: "red"}}>{state.errors.username}</p>
+            <p data-testid="username-error" style={{ color: "red"}}>{state.errors.username}</p>
           )}
         </div>
         <div>
@@ -41,7 +41,7 @@ const RegisterPage = () => {
         <div>
           <label>
             Password
-            <input type="password" name="passwordConfirm" required defaultValue={state.values?.password}/>
+            <input type="password" name="password" required defaultValue={state.values?.password}/>
           </label>
           {state.errors.password && (
             <p style={{ color: "red"}}>{state.errors.password}</p>
@@ -49,14 +49,14 @@ const RegisterPage = () => {
         </div>
         <div>
           <label>
-            Confirm password
-            <input type="password" name="password" required defaultValue={state.values?.password}/>
+            Confirm Password
+            <input type="password" name="passwordConfirm" required defaultValue={state.values?.password}/>
           </label>
           {state.errors.passwordConfirm && (
-            <p style={{ color: "red"}}>{state.errors.passwordConfirm}</p>
+            <p data-testid="passwordConfirm-error" style={{ color: "red"}}>{state.errors.passwordConfirm}</p>
           )}
         </div>
-        <button type="submit">Register</button>
+        <button type="submit" data-testid="register-button">Register</button>
       </form>
     </div>
   )
