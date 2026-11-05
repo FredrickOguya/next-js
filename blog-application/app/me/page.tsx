@@ -3,9 +3,10 @@ import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { connection } from "next/server"
 import { db } from "@/db"
-import { users } from "@/db/schema"
+import { blogs, readingList, users } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { generateApiToken } from "../actions/apiToken"
+import Link from "next/link"
 
 export const instant = false
 
@@ -21,6 +22,24 @@ const Me = async () => {
   const user = await db.query.users.findFirst({
     where: eq(users.id, Number(session?.user?.id))
   })
+
+  const readingListItems = user
+  ? await db
+      .select({
+        id: readingList.id,
+        read: readingList.read,
+        blogId: readingList.blogId,
+        title: blogs.title,
+        author: blogs.author,
+        url: blogs.url,
+      })
+      .from(readingList)
+      .innerJoin(
+        blogs,
+        eq(readingList.blogId, blogs.id)
+      )
+      .where(eq(readingList.userId, user.id))
+  : []
 
   return (
     <main className="min-h-screen bg-white px-6 py-16">
@@ -47,10 +66,8 @@ const Me = async () => {
           </p>
         </div>
 
-        {/* Divider */}
         <hr className="my-14 border-t border-gray-300" />
 
-        {/* API Token section */}
         <h2 className="mb-7 text-3xl font-bold text-slate-800">
           API Token
         </h2>
@@ -67,7 +84,6 @@ const Me = async () => {
           )}
         </div>
 
-        {/* Generate token button */}
         <form action={generateApiToken}>
           <button
             type="submit"
@@ -76,7 +92,41 @@ const Me = async () => {
             Generate New Token
           </button>
         </form>
+        <hr className="my-14 border-t border-gray-300" />
 
+        <h2 className="mb-7 text-3xl font-bold text-slate-800">
+          My Reading List
+        </h2>
+
+        {readingListItems.length === 0 ? (
+          <p className="text-lg text-gray-500">
+            Your reading list is empty.
+          </p>
+        ) : (
+          <div className="space-y-5">
+            {readingListItems.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-lg border border-gray-200 p-6"
+              >
+                <Link
+                  href={`/blogs/${item.blogId}`}
+                  className="text-xl font-semibold text-blue-600 hover:underline"
+                >
+                  {item.title}
+                </Link>
+
+                <p className="mt-2 text-gray-600">
+                  by {item.author}
+                </p>
+
+                <p className="mt-3 text-sm text-gray-500">
+                  Status: {item.read ? "Read" : "Unread"}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   )

@@ -1,6 +1,9 @@
-import Link from "next/link"
-import { getBlogById } from "../../services/blogs"
+
+import { getBlogById, isInReadingList } from "../../services/blogs"
+import { getCurrentUser } from "../../services/session"
 import { notFound } from "next/navigation"
+import { likeBlogAction } from "@/app/actions/blogs"
+import ReadingListButton from "./ReadingListButton"
 
 export const instant = false
 
@@ -17,43 +20,66 @@ const Blog = async ({
     notFound()
   }
 
+  const user = await getCurrentUser()
+
+  const alreadyAdded = user
+    ? await isInReadingList(user.id, blog.id)
+    : false
+
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <Link href="/blogs" className="text-sm text-blue-600 hover:underline">
-        ← back to blogs
-      </Link>
+    <div className="min-h-screen bg-white px-4 py-12">
+      <div className="max-w-2xl mx-auto">
+        <article className="mt-5 rounded-md border border-gray-100 p-8 shadow-sm">
 
-      <article className="mt-4 border rounded-lg p-6 shadow-sm">
-        <h2 className="text-2xl font-bold">{blog.title}</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {blog.title}
+          </h2>
 
-        <dl className="mt-4 space-y-2">
-          <div className="flex gap-2">
-            <dt className="font-medium text-gray-500 w-20">Author</dt>
-            <dd>{blog.author}</dd>
-          </div>
-          <div className="flex gap-2">
-            <dt className="font-medium text-gray-500 w-20">Year</dt>
-            <dd>{blog.year}</dd>
-          </div>
-          <div className="flex gap-2">
-            <dt className="font-medium text-gray-500 w-20">Likes</dt>
-            <dd>{blog.likes}</dd>
-          </div>
-          <div className="flex gap-2">
-            <dt className="font-medium text-gray-500 w-20">URL</dt>
-            <dd className="min-w-0">
-              <a
-                href={blog.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-600 hover:underline break-all"
+          <p className="mt-3 text-lg text-gray-600">
+            by {blog.author}
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <span className="text-gray-700">
+              likes: {blog.likes}
+            </span>
+
+            <form action={likeBlogAction}>
+              <input
+                type="hidden"
+                name="id"
+                value={blog.id}
+              />
+
+              <button
+                type="submit"
+                className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
               >
-                {blog.url}
-              </a>
-            </dd>
+                like
+              </button>
+            </form>
+
+            {user && user.id !== blog.userId && (
+              <ReadingListButton
+                blogId={blog.id}
+                alreadyAdded={alreadyAdded}
+              />
+            )}
           </div>
-        </dl>
-      </article>
+
+          <div className="mt-7">
+            <a
+              href={blog.url}
+              target="_blank"
+              rel="noreferrer"
+              className="break-all text-blue-600 hover:underline"
+            >
+              {blog.url}
+            </a>
+          </div>
+
+        </article>
+      </div>
     </div>
   )
 }

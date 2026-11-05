@@ -1,7 +1,7 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { addBlog, likeBlog } from "../services/blogs"
+import { addBlog, addToReadingList, likeBlog } from "../services/blogs"
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
 
@@ -62,3 +62,19 @@ export const likeBlogAction = async (formData: FormData) => {
   revalidatePath(`/blogs/${id}`)
   revalidatePath("/blogs")
 }
+
+export const addToReadingListAction = async (blogId: number) => {
+  const session = await auth()
+
+  if (!session) {
+    redirect("/login")
+  }
+
+  const added = await addToReadingList(blogId)
+
+  revalidatePath(`/blogs/${blogId}`)
+  revalidatePath("/me")
+  return added
+}
+
+export const updateReadingListStatusAction = async
