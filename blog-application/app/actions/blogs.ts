@@ -1,7 +1,7 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { addBlog, addToReadingList, likeBlog } from "../services/blogs"
+import { addBlog, addToReadingList, likeBlog, updatedReadingListStatus } from "../services/blogs"
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
 
@@ -77,4 +77,21 @@ export const addToReadingListAction = async (blogId: number) => {
   return added
 }
 
-export const updateReadingListStatusAction = async
+export const updateReadingListStatusAction = async (
+  formData: FormData
+) => {
+  const session = await auth()
+
+  if (!session) redirect("/login")
+
+    const id = Number(formData.get("id"))
+    const read = formData.get("read") === "true"
+
+    if (!Number.isInteger(id) || id <= 0) {
+      throw new Error("Invalid reading list ID")
+    }
+
+    await updatedReadingListStatus(id, read)
+
+    revalidatePath("/me")
+}

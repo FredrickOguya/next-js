@@ -61,7 +61,7 @@ export const likeBlog = async (id: number) => {
   return result[0]
 }
 
-export const addToReading = async (blogId: number) => {
+export const addToReadingList = async (blogId: number) => {
   const user = await getCurrentUser()
 
   if (!user) {
@@ -101,3 +101,41 @@ export const addToReading = async (blogId: number) => {
     return true
 }
 
+export const isInReadingList = async (
+  userId: number,
+  blogId: number
+) => {
+  const [existing] = await db
+    .select()
+    .from(readingList)
+    .where(
+      and(
+        eq(readingList.userId, userId),
+        eq(readingList.blogId, blogId)
+      )
+    )
+    .limit(1)
+
+  return Boolean(existing)
+}
+
+export const updatedReadingListStatus = async(id: number, read: boolean) => {
+  const user = await getCurrentUser()
+
+  if (!user) {
+    throw new Error("Not logged in")
+  }
+
+  const result = await db
+    .update(readingList)
+    .set({ read })
+    .where(
+      and(
+        eq(readingList.id, id),
+        eq(readingList.userId, user.id)
+      )
+    )
+    .returning()
+
+    return result[0]
+}

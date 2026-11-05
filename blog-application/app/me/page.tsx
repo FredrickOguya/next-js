@@ -7,6 +7,7 @@ import { blogs, readingList, users } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { generateApiToken } from "../actions/apiToken"
 import Link from "next/link"
+import { updateReadingListStatusAction } from "../actions/blogs"
 
 export const instant = false
 
@@ -41,6 +42,14 @@ const Me = async () => {
       .where(eq(readingList.userId, user.id))
   : []
 
+      const unreadItems = readingListItems.filter(
+      (item) => !item.read
+    )
+
+    const readItems = readingListItems.filter(
+      (item) => item.read
+    )
+
   return (
     <main className="min-h-screen bg-white px-6 py-16">
       <div className="mx-auto w-full max-w-5xl rounded-lg border border-gray-200 bg-white p-10 shadow-md">
@@ -66,7 +75,107 @@ const Me = async () => {
           </p>
         </div>
 
+
         <hr className="my-14 border-t border-gray-300" />
+
+        <h2 className="mb-8 text-3xl font-bold text-slate-800">
+          My Reading List
+        </h2>
+
+        {/* Unread blogs */}
+        <section className="mb-12">
+          <h3 className="mb-5 text-2xl font-semibold text-slate-700">
+            Unread ({unreadItems.length})
+          </h3>
+
+          {unreadItems.length === 0 ? (
+            <p className="text-gray-500">
+              You have no unread blogs.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {unreadItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-lg border border-amber-200 bg-amber-50 p-6"
+                >
+                  <Link
+                    href={`/blogs/${item.blogId}`}
+                    className="text-xl font-semibold text-blue-700 hover:underline"
+                  >
+                    {item.title}
+                  </Link>
+
+                  <p className="mt-2 text-gray-600">
+                    by {item.author}
+                  </p>
+
+                  <form
+                    action={updateReadingListStatusAction}
+                    className="mt-5"
+                  >
+                    <input
+                      type="hidden"
+                      name="id"
+                      value={item.id}
+                    />
+
+                    <input
+                      type="hidden"
+                      name="read"
+                      value="true"
+                    />
+
+                    <button
+                      type="submit"
+                      className="rounded-md bg-green-600 px-5 py-2 font-semibold text-white hover:bg-green-700"
+                    >
+                      Mark as read
+                    </button>
+                  </form>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Read blogs */}
+        <section>
+          <h3 className="mb-5 text-2xl font-semibold text-slate-700">
+            Read ({readItems.length})
+          </h3>
+
+          {readItems.length === 0 ? (
+            <p className="text-gray-500">
+              You have not read any blogs yet.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {readItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-lg border border-green-200 bg-green-50 p-6"
+                >
+                  <Link
+                    href={`/blogs/${item.blogId}`}
+                    className="text-xl font-semibold text-blue-700 hover:underline"
+                  >
+                    {item.title}
+                  </Link>
+
+                  <p className="mt-2 text-gray-600">
+                    by {item.author}
+                  </p>
+
+                  <p className="mt-4 font-medium text-green-700">
+                    ✓ Read
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+                <hr className="my-14 border-t border-gray-300" />
 
         <h2 className="mb-7 text-3xl font-bold text-slate-800">
           API Token
@@ -93,40 +202,6 @@ const Me = async () => {
           </button>
         </form>
         <hr className="my-14 border-t border-gray-300" />
-
-        <h2 className="mb-7 text-3xl font-bold text-slate-800">
-          My Reading List
-        </h2>
-
-        {readingListItems.length === 0 ? (
-          <p className="text-lg text-gray-500">
-            Your reading list is empty.
-          </p>
-        ) : (
-          <div className="space-y-5">
-            {readingListItems.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-lg border border-gray-200 p-6"
-              >
-                <Link
-                  href={`/blogs/${item.blogId}`}
-                  className="text-xl font-semibold text-blue-600 hover:underline"
-                >
-                  {item.title}
-                </Link>
-
-                <p className="mt-2 text-gray-600">
-                  by {item.author}
-                </p>
-
-                <p className="mt-3 text-sm text-gray-500">
-                  Status: {item.read ? "Read" : "Unread"}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </main>
   )

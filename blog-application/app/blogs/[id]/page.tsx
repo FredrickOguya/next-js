@@ -77,7 +77,7 @@ const Blog = async ({
               {blog.url}
             </a>
           </div>
-
+          
         </article>
       </div>
     </div>
