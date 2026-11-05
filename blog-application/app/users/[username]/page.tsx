@@ -34,3 +34,4 @@ const User = async ({
 }
 
 export default User
+export const instant = false
